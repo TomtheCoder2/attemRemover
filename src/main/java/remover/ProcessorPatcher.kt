@@ -1,10 +1,10 @@
 package remover
 
-import arc.struct.Seq
-import arc.util.Strings
-import mindustry.Vars.player
-import mindustry.gen.Building
-import mindustry.world.blocks.logic.LogicBlock.LogicBuild
+import arc.struct.*
+import arc.util.*
+import mindustry.Vars.*
+import mindustry.gen.*
+import mindustry.world.blocks.logic.LogicBlock.*
 
 object ProcessorPatcher {
     private val attemMatcher =

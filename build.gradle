@@ -37,7 +37,7 @@ jar {
     }
 }
 buildscript {
-    ext.kotlin_version = '1.6.0'
+    ext.kotlin_version = '1.7.0'
     repositories {
         mavenCentral()
     }
