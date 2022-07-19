@@ -1,0 +1,8 @@
+{
+  "name": "AttemRemover",
+  "displayName": "[cyan]Attem Remover",
+  "author": "Nautilus",
+  "main": "remover.AttemRemover",
+  "description": "Remove attem schems",
+  "version": "1.0"
+}
