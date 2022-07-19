@@ -8,6 +8,7 @@ import mindustry.world.blocks.logic.LogicBlock;
 
 public class AttemRemover extends Plugin {
     public AttemRemover() {
+        System.out.println("Starting AttemRemover...");
         Events.on(EventType.ConfigEvent.class, event -> {
             if (event.tile == null || event.player == null) return;
             if (event.tile.tile.build.block == Blocks.microProcessor ||
@@ -19,7 +20,7 @@ public class AttemRemover extends Plugin {
             }
         });
         Events.on(EventType.BlockBuildEndEvent.class, event -> {
-            if (event.tile == null || event.unit.getPlayer() == null) return;
+            if (event.tile == null || event.unit.getPlayer() == null || event.tile.build == null) return;
             if (event.tile.build.block == Blocks.microProcessor ||
                     event.tile.build.block == Blocks.logicProcessor ||
                     event.tile.build.block == Blocks.hyperProcessor) {
