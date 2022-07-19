@@ -1,33 +1,38 @@
-package remover;
+package remover
 
-import arc.Events;
-import mindustry.content.Blocks;
-import mindustry.game.EventType;
-import mindustry.mod.Plugin;
-import mindustry.world.blocks.logic.LogicBlock;
+import arc.*
+import arc.util.*
+import mindustry.content.*
+import mindustry.game.EventType.*
+import mindustry.mod.*
+import mindustry.world.blocks.logic.*
+import mindustry.world.blocks.logic.LogicBlock.*
+import java.util.concurrent.*
 
-public class AttemRemover extends Plugin {
-    public AttemRemover() {
-        System.out.println("Starting AttemRemover...");
-        Events.on(EventType.ConfigEvent.class, event -> {
-            if (event.tile == null || event.player == null) return;
-            if (event.tile.tile.build.block == Blocks.microProcessor ||
-                    event.tile.tile.build.block == Blocks.logicProcessor ||
-                    event.tile.tile.build.block == Blocks.hyperProcessor) {
-                LogicBlock.LogicBuild p = (LogicBlock.LogicBuild) event.tile.tile.build;
-                Thread t = new RThread(p.code, event.tile.tile.build, event.player);
-                t.start();
+class AttemRemover : Plugin() {
+    private val pool = Executors.newSingleThreadExecutor {
+        Thread(it, "Attem Matcher").apply {
+            isDaemon = true
+            uncaughtExceptionHandler = Thread.UncaughtExceptionHandler { _, e -> Log.err("Error in attem matching thread", e) }
+        }
+    }
+
+    init {
+        Log.info("Starting AttemRemover...")
+        Events.on(ConfigEvent::class.java) { event: ConfigEvent ->
+            val player = event.player ?: return@on
+            val proc = event.tile as? LogicBuild ?: return@on
+
+            pool.execute { // The regex can be slow
+                val patched = ProcessorPatcher.patch(proc.code)
+                if (patched != proc.code) {
+                    Core.app.post {
+                        proc.configure(compress(patched, proc.relativeConnections()))
+                        Log.info("Found attem at (${proc.tile.x}, ${proc.tile.y})!")
+                        player.sendMessage("[scarlet]Please do not use this logic, as it is attem83 logic and is bad to use. For more information please read [cyan]www.mindustry.dev/attem")
+                    }
+                }
             }
-        });
-        Events.on(EventType.BlockBuildEndEvent.class, event -> {
-            if (event.tile == null || event.unit.getPlayer() == null || event.tile.build == null) return;
-            if (event.tile.build.block == Blocks.microProcessor ||
-                    event.tile.build.block == Blocks.logicProcessor ||
-                    event.tile.build.block == Blocks.hyperProcessor) {
-                LogicBlock.LogicBuild p = (LogicBlock.LogicBuild) event.tile.build;
-                Thread t = new RThread(p.code, event.tile.build, event.unit.getPlayer());
-                t.start();
-            }
-        });
+        }
     }
 }
