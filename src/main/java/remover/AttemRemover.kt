@@ -2,10 +2,8 @@ package remover
 
 import arc.*
 import arc.util.*
-import mindustry.content.*
 import mindustry.game.EventType.*
 import mindustry.mod.*
-import mindustry.world.blocks.logic.*
 import mindustry.world.blocks.logic.LogicBlock.*
 import java.util.concurrent.*
 
